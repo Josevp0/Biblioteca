@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Préstamo - Biblioteca Virtual</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a2c2a;
+            --secondary-color: #7d4f50;
+            --accent-color: #d4a373;
+            --light-color: #fefae0;
+            --dark-color: #283618;
+            --text-color: #333333;
+            --white-color: #ffffff;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1rem 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover,
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: var(--white-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .dropdown-menu {
+            background-color: var(--white-color);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            padding: 0.7rem 1.2rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(212, 163, 115, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline-light {
+            border-radius: 50px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 3rem 0;
+        }
+        
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+            padding: 1.5rem 2rem;
+            border-bottom: none;
+        }
+        
+        .card-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+        
+        .card-body {
+            padding: 2rem;
+            background-color: var(--white-color);
+        }
+        
+        /* Detail Styles */
+        .detail-section {
+            background-color: rgba(212, 163, 115, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .detail-section h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            font-size: 1.2rem;
+        }
+        
+        .detail-item {
+            margin-bottom: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            width: 180px;
+            margin-right: 1rem;
+        }
+        
+        .detail-value {
+            color: #555;
+            flex: 1;
+        }
+        
+        /* Badge Styles */
+        .badge {
+            padding: 0.5rem 0.8rem;
+            font-weight: 500;
+            border-radius: 50px;
+            font-size: 0.75rem;
+        }
+        
+        .bg-success {
+            background-color: rgba(25, 135, 84, 0.1) !important;
+            color: var(--success-color) !important;
+        }
+        
+        .bg-warning {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+            color: var(--warning-color) !important;
+        }
+        
+        .bg-danger {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+            color: var(--danger-color) !important;
+        }
+        
+        .bg-info {
+            background-color: rgba(13, 202, 240, 0.1) !important;
+            color: var(--info-color) !important;
+        }
+        
+        /* Comments Section */
+        .comments-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .comments-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .comments-title i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+        }
+        
+        .comments-text {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 0;
+            line-height: 1.6;
+            padding: 0.8rem;
+            background-color: var(--white-color);
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        /* Button Styles */
+        .btn {
+            border-radius: 50px;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark-color);
+            color: var(--white-color);
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-text {
+            opacity: 0.8;
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 991.98px) {
+            .card-header h3 {
+                font-size: 1.3rem;
+            }
+            
+            .detail-section h5 {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .detail-section {
+                padding: 1.2rem;
+            }
+            
+            .detail-item {
+                flex-direction: column;
+            }
+            
+            .detail-label {
+                width: 100%;
+                margin-bottom: 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/profesor/inicio">
+                <i class="fas fa-book-open"></i>
+                Biblioteca Virtual
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profesor/inicio">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profesor/catalogo">Catálogo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profesor/prestamos">Solicitar Préstamo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/profesor/historial-prestamos">Mis Préstamos</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Mis Listas
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/profesor/libros-favoritos">Favoritos</a></li>
+                            <li><a class="dropdown-item" href="/profesor/libros-pendientes">Pendientes</a></li>
+                            <li><a class="dropdown-item" href="/profesor/libros-leidos">Leídos</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="text-white me-3" th:text="${'Bienvenido: ' + session.usuarioNombre}">Bienvenido: Profesor</span>
+                    <a href="/logout" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fas fa-info-circle me-2"></i>
+                                Detalle de Préstamo
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Información del préstamo -->
+                            <div class="detail-section">
+                                <h5>
+                                    <i class="fas fa-book me-2"></i>
+                                    Información del Préstamo
+                                </h5>
+                                <div class="detail-item">
+                                    <div class="detail-label">ID:</div>
+                                    <div class="detail-value" th:text="${prestamo.id}">ID</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Libro:</div>
+                                    <div class="detail-value" th:text="${prestamo.libro}">Libro</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Usuario:</div>
+                                    <div class="detail-value" th:text="${prestamo.usuario}">Usuario</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Fecha de Préstamo:</div>
+                                    <div class="detail-value" th:text="${#temporals.format(prestamo.fechaPrestamo, 'dd/MM/yyyy')}">Fecha Préstamo</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Fecha de Devolución:</div>
+                                    <div class="detail-value" th:text="${#temporals.format(prestamo.fechaDevolucion, 'dd/MM/yyyy')}">Fecha Devolución</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Estado del préstamo -->
+                            <div class="detail-section">
+                                <h5>
+                                    <i class="fas fa-clipboard-check me-2"></i>
+                                    Estado del Préstamo
+                                </h5>
+                                <div class="detail-item">
+                                    <div class="detail-label">Estado:</div>
+                                    <div class="detail-value">
+                                        <span class="badge" 
+                                              th:classappend="${prestamo.estado == 'Aprobado' ? 'bg-success' : 
+                                                              (prestamo.estado == 'Pendiente' ? 'bg-warning' : 
+                                                              (prestamo.estado == 'Devuelto' ? 'bg-info' : 'bg-danger'))}"
+                                              th:text="${prestamo.estado}">
+                                            Estado
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Comentarios del usuario -->
+                            <div class="comments-section" th:if="${prestamo.comentarios != null && !prestamo.comentarios.isEmpty()}">
+                                <h5 class="comments-title">
+                                    <i class="fas fa-comment-alt"></i>
+                                    Comentarios del Usuario
+                                </h5>
+                                <div class="comments-text" th:text="${prestamo.comentarios}">
+                                    Comentarios del usuario sobre el préstamo.
+                                </div>
+                            </div>
+                            
+                            <!-- Comentarios del bibliotecario -->
+                            <div class="comments-section" th:if="${prestamo.comentariosBibliotecario != null && !prestamo.comentariosBibliotecario.isEmpty()}">
+                                <h5 class="comments-title">
+                                    <i class="fas fa-comment-dots"></i>
+                                    Comentarios del Bibliotecario
+                                </h5>
+                                <div class="comments-text" th:text="${prestamo.comentariosBibliotecario}">
+                                    Comentarios del bibliotecario sobre el préstamo.
+                                </div>
+                            </div>
+                            
+                            <!-- Botones de acción -->
+                            <div class="mt-4 text-center">
+                                <a href="/profesor/historial-prestamos" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Volver al Historial
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="footer-text">© 2025 Biblioteca Virtual. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

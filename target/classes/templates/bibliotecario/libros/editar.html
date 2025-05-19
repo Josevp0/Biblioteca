@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Libro - Biblioteca Virtual</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --primary-light: #34495e;
+            --secondary-color: #3498db;
+            --accent-color: #2980b9;
+            --accent-light: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+            --white-color: #ffffff;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --border-radius: 12px;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            line-height: 1.6;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 30px 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .sidebar-logo i {
+            font-size: 1.8rem;
+            margin-right: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sidebar-menu {
+            padding: 25px 0;
+        }
+        
+        .menu-item {
+            padding: 14px 25px;
+            display: flex;
+            align-items: center;
+            color: var(--white-color);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            margin: 5px 0;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-light);
+        }
+        
+        .menu-item i {
+            margin-right: 15px;
+            width: 22px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            padding-top: calc(var(--header-height) + 30px);
+        }
+        
+        /* Header Styles */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background-color: var(--white-color);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 900;
+        }
+        
+        .header-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            letter-spacing: 0.5px;
+        }
+        
+        .user-profile {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white-color);
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+            padding: 20px 25px;
+            border: none;
+        }
+        
+        .card-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        /* Form Styles */
+        .form-label {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            border-radius: var(--border-radius);
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(41, 128, 185, 0.25);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+        }
+        
+        /* File Input Styles */
+        .form-control[type="file"] {
+            padding: 8px;
+        }
+        
+        .form-control[type="file"]::file-selector-button {
+            padding: 8px 12px;
+            background-color: var(--light-color);
+            border: none;
+            border-radius: calc(var(--border-radius) - 4px);
+            margin-right: 12px;
+            transition: var(--transition);
+        }
+        
+        .form-control[type="file"]::file-selector-button:hover {
+            background-color: #ddd;
+        }
+        
+        /* Current File Styles */
+        .current-file {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .current-file img {
+            width: 100px;
+            height: auto;
+            border-radius: calc(var(--border-radius) - 4px);
+            margin-right: 15px;
+            border: 1px solid #eee;
+        }
+        
+        /* Button Styles */
+        .btn {
+            border-radius: var(--border-radius);
+            padding: 10px 20px;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-light);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #7f8c8d;
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+        }
+        
+        .btn-info {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        /* Alert Styles */
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: calc(var(--header-height) + 20px);
+            }
+            
+            .main-header {
+                left: 0;
+            }
+            
+            .toggle-sidebar {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                margin-right: 15px;
+                cursor: pointer;
+                color: var(--primary-color);
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .toggle-sidebar {
+                display: none;
+            }
+        }
+        
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-book-open"></i>
+                <span>Biblioteca Virtual</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="/bibliotecario/inicio" class="menu-item">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="/bibliotecario/libros/listar" class="menu-item active">
+                <i class="fas fa-book"></i>
+                <span>Libros</span>
+            </a>
+            <a href="/bibliotecario/prestamos/listar" class="menu-item">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Préstamos</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay"></div>
+    
+    <!-- Header -->
+    <header class="main-header">
+        <button class="toggle-sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-title">Editar Libro</div>
+        <div class="user-profile">
+            <a href="/logout" class="logout-btn" title="Cerrar sesión">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="card">
+            <div class="card-header">
+                <h3>Editar Libro</h3>
+            </div>
+            <div class="card-body">
+                <!-- Mensaje de error -->
+                <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
+                    Error en la operación
+                </div>
+                
+                <form th:action="@{/bibliotecario/libros/editar/{id}(id=${libro.id})}" method="post" enctype="multipart/form-data" th:object="${libro}">
+                    <div class="mb-4">
+                        <label for="titulo" class="form-label">
+                            <i class="fas fa-heading me-2"></i>Título
+                        </label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" th:field="*{titulo}" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="autor" class="form-label">
+                            <i class="fas fa-user me-2"></i>Autor
+                        </label>
+                        <input type="text" class="form-control" id="autor" name="autor" th:field="*{autor}" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="categoria" class="form-label">
+                            <i class="fas fa-tag me-2"></i>Categoría
+                        </label>
+                        <select class="form-select form-control" id="categoria" name="categoria" th:field="*{categoria}" required>
+                            <option value="">Seleccione una categoría</option>
+                            <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}">Categoría</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="descripcion" class="form-label">
+                            <i class="fas fa-align-left me-2"></i>Descripción
+                        </label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="5" th:field="*{descripcion}" required></textarea>
+                    </div>
+                    
+                    <!-- Stock según tipo de libro -->
+                    <div class="mb-4" th:if="${libro.tipo == 'fisico'}">
+                        <label for="stockFisico" class="form-label">
+                            <i class="fas fa-boxes me-2"></i>Stock Físico
+                        </label>
+                        <input type="number" class="form-control" id="stockFisico" name="stockFisico" min="0" th:field="*{stockFisico}" required>
+                    </div>
+                    
+                    <div class="mb-4" th:if="${libro.tipo == 'virtual'}">
+                        <label for="stockVirtual" class="form-label">
+                            <i class="fas fa-key me-2"></i>Stock Virtual
+                        </label>
+                        <input type="number" class="form-control" id="stockVirtual" name="stockVirtual" min="0" th:field="*{stockVirtual}" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="estadoDisponibilidad" class="form-label">
+                            <i class="fas fa-info-circle me-2"></i>Estado de Disponibilidad
+                        </label>
+                        <select class="form-select form-control" id="estadoDisponibilidad" name="estadoDisponibilidad" th:field="*{estadoDisponibilidad}">
+                            <option th:each="estado : ${estados}" th:value="${estado}" th:text="${estado}">Estado</option>
+                        </select>
+                        <div class="form-text">El estado se actualizará automáticamente según el stock, pero puede establecerlo manualmente.</div>
+                    </div>
+                    
+                    <!-- Imagen actual -->
+                    <div class="mb-4" th:if="${libro.imagen != null && libro.imagen.length > 0}">
+                        <label class="form-label">
+                            <i class="fas fa-image me-2"></i>Imagen Actual
+                        </label>
+                        <div class="current-file">
+                            <img th:src="@{'/bibliotecario/libros/imagen/' + ${libro.id}}" alt="Portada" class="img-thumbnail">
+                        </div>
+                        <div class="form-text">Deja vacío para mantener la imagen actual</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="imagenFile" class="form-label">
+                            <i class="fas fa-upload me-2"></i>Nueva Imagen de Portada (opcional)
+                        </label>
+                        <input type="file" class="form-control" id="imagenFile" name="imagenFile" accept="image/*">
+                        <div class="form-text">Formatos aceptados: JPG, PNG, GIF. Tamaño máximo: 5MB</div>
+                    </div>
+                    
+                    <!-- PDF actual (solo para libros virtuales) -->
+                    <div class="mb-4" th:if="${libro.tipo == 'virtual' && libro.archivoPdf != null}">
+                        <label class="form-label">
+                            <i class="fas fa-file-pdf me-2"></i>Archivo PDF Actual
+                        </label>
+                        <div class="current-file">
+                            <i class="fas fa-file-pdf text-danger me-2" style="font-size: 2rem;"></i>
+                            <a th:href="@{'/uploads/' + ${libro.archivoPdf}}" target="_blank" class="btn btn-sm btn-info">Ver PDF</a>
+                        </div>
+                        <div class="form-text">Deja vacío para mantener el PDF actual</div>
+                    </div>
+                    
+                    <!-- Nuevo PDF (solo para libros virtuales) -->
+                    <div class="mb-4" th:if="${libro.tipo == 'virtual'}">
+                        <label for="pdfFile" class="form-label">
+                            <i class="fas fa-upload me-2"></i>Nuevo Archivo PDF (opcional)
+                        </label>
+                        <input type="file" class="form-control" id="pdfFile" name="pdfFile" accept="application/pdf">
+                        <div class="form-text">Tamaño máximo: 20MB. Asegúrese de que el PDF no esté protegido.</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-5">
+                        <a href="/bibliotecario/libros/listar" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i>Actualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle Sidebar on Mobile
+        document.querySelector('.toggle-sidebar')?.addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking overlay
+        document.querySelector('.sidebar-overlay')?.addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.remove('active');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
+        });
+        
+        // Logout button functionality
+        document.querySelector('.logout-btn')?.addEventListener('click', function() {
+            window.location.href = '/logout';
+        });
+    </script>
+</body>
+</html>

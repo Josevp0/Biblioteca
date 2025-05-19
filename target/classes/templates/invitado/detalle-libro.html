@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Libro - Biblioteca Virtual</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a2c2a;
+            --secondary-color: #7d4f50;
+            --accent-color: #d4a373;
+            --light-color: #fefae0;
+            --dark-color: #283618;
+            --text-color: #333333;
+            --white-color: #ffffff;
+            --physical-color: #3a86ff;
+            --virtual-color: #38b000;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+            padding: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .app-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            color: var(--white-color);
+            text-decoration: none;
+        }
+        
+        .app-logo i {
+            margin-right: 12px;
+            font-size: 1.6rem;
+        }
+        
+        .login-btn {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-btn:hover {
+            background-color: var(--white-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 3rem 0;
+        }
+        
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        /* Book Card */
+        .book-detail-card {
+            background-color: var(--white-color);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        
+        .book-cover-container {
+            height: 100%;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .book-cover {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .book-cover:hover {
+            transform: scale(1.03);
+        }
+        
+        .book-info {
+            padding: 2.5rem;
+        }
+        
+        .book-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .book-meta {
+            margin-bottom: 2rem;
+        }
+        
+        .meta-item {
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .meta-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(212, 163, 115, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+        
+        .meta-value {
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
+        .badge {
+            font-weight: 600;
+            padding: 0.5rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+        }
+        
+        .badge-type {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-physical {
+            background-color: var(--physical-color);
+            color: white;
+        }
+        
+        .badge-virtual {
+            background-color: var(--virtual-color);
+            color: white;
+        }
+        
+        .badge-available {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .badge-loaned {
+            background-color: #fff8e1;
+            color: #ff8f00;
+        }
+        
+        .badge-reserved {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .badge-unavailable {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .book-description {
+            line-height: 1.7;
+            color: #555;
+            margin-top: 1.5rem;
+        }
+        
+        /* Alert for virtual books */
+        .virtual-book-alert {
+            background-color: rgba(58, 134, 255, 0.08);
+            border-left: 4px solid var(--physical-color);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-top: 2rem;
+        }
+        
+        .alert-icon {
+            color: var(--physical-color);
+            font-size: 1.3rem;
+            margin-right: 1rem;
+        }
+        
+        /* Not Found Message */
+        .not-found-message {
+            text-align: center;
+            padding: 3rem;
+        }
+        
+        .not-found-icon {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Buttons */
+        .btn-back {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+        
+        .btn-back:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Footer */
+        .app-footer {
+            background-color: var(--dark-color);
+            color: var(--white-color);
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .footer-text {
+            opacity: 0.8;
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 991.98px) {
+            .book-title {
+                font-size: 1.6rem;
+            }
+            
+            .book-cover-container {
+                padding: 1.5rem;
+            }
+            
+            .book-info {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .book-cover-container {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="container header-content">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="/invitado/inicio" class="app-logo">
+                    <i class="fas fa-book-open"></i>
+                    <span>Biblioteca Virtual</span>
+                </a>
+                <a href="/login" class="btn login-btn">
+                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Detalle del Libro</h1>
+            
+            <!-- Book Not Found -->
+            <div th:if="${libro == null}" class="book-detail-card not-found-message">
+                <div class="not-found-icon">
+                    <i class="fas fa-book-dead"></i>
+                </div>
+                <h3 class="mb-3">Libro no encontrado</h3>
+                <p class="text-muted mb-4">El libro solicitado no se encuentra disponible.</p>
+                <a href="/invitado/catalogo" class="btn btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Volver al Catálogo
+                </a>
+            </div>
+            
+            <!-- Book Details -->
+            <div th:if="${libro != null}" class="book-detail-card">
+                <div class="row g-0">
+                    <!-- Book Cover -->
+                    <div class="col-md-4">
+                        <div class="book-cover-container">
+                            <img th:if="${libro.imagen != null && libro.imagen.length > 0}" 
+                                 th:src="@{'/invitado/imagen-libro/' + ${libro.id}}" 
+                                 alt="Portada del libro" class="book-cover">
+                            <img th:unless="${libro.imagen != null && libro.imagen.length > 0}" 
+                                 src="/placeholder.jpg" 
+                                 alt="Portada no disponible" class="book-cover">
+                        </div>
+                    </div>
+                    
+                    <!-- Book Info -->
+                    <div class="col-md-8">
+                        <div class="book-info">
+                            <h2 class="book-title" th:text="${libro.titulo}">Título del Libro</h2>
+                            
+                            <div class="book-meta">
+                                <!-- Author -->
+                                <div class="meta-item">
+                                    <div class="meta-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <div class="meta-label">Autor</div>
+                                        <div class="meta-value" th:text="${libro.autor}">Autor del libro</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Category -->
+                                <div class="meta-item">
+                                    <div class="meta-icon">
+                                        <i class="fas fa-tags"></i>
+                                    </div>
+                                    <div>
+                                        <div class="meta-label">Categoría</div>
+                                        <div class="meta-value" th:text="${libro.categoria}">Categoría del libro</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Book Type -->
+                                <div class="meta-item">
+                                    <div class="meta-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div>
+                                        <div class="meta-label">Tipo</div>
+                                        <div>
+                                            <span class="badge badge-type" 
+                                                  th:classappend="${libro.tipo == 'fisico'} ? 'badge-physical' : 'badge-virtual'"
+                                                  th:text="${libro.tipo == 'fisico'} ? 'Físico' : 'Virtual'">
+                                                Tipo
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Availability Status -->
+                                <div class="meta-item">
+                                    <div class="meta-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div>
+                                        <div class="meta-label">Estado</div>
+                                        <div>
+                                            <span class="badge"
+                                                  th:classappend="${libro.estadoDisponibilidad == 'Disponible' ? 'badge-available' : 
+                                                                  (libro.estadoDisponibilidad == 'Prestado' ? 'badge-loaned' : 
+                                                                  (libro.estadoDisponibilidad == 'Reservado' ? 'badge-reserved' : 'badge-unavailable'))}"
+                                                  th:text="${libro.estadoDisponibilidad}">
+                                                Estado
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Stock Information -->
+                                <div class="meta-item">
+                                    <div class="meta-icon">
+                                        <i class="fas fa-boxes"></i>
+                                    </div>
+                                    <div>
+                                        <div class="meta-label">Disponibilidad</div>
+                                        <div>
+                                            <span th:if="${libro.tipo == 'fisico' && libro.stockFisico > 0}" class="badge badge-available">
+                                                <span th:text="${libro.stockFisico}"></span> unidades disponibles
+                                            </span>
+                                            <span th:if="${libro.tipo == 'fisico' && libro.stockFisico == 0}" class="badge badge-unavailable">
+                                                No disponible
+                                            </span>
+                                            <span th:if="${libro.tipo == 'virtual' && libro.stockVirtual > 0}" class="badge badge-available">
+                                                <span th:text="${libro.stockVirtual}"></span> licencias disponibles
+                                            </span>
+                                            <span th:if="${libro.tipo == 'virtual' && libro.stockVirtual == 0}" class="badge badge-unavailable">
+                                                No disponible
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Book Description -->
+                            <div class="meta-item">
+                                <div class="meta-icon">
+                                    <i class="fas fa-align-left"></i>
+                                </div>
+                                <div>
+                                    <div class="meta-label">Descripción</div>
+                                    <div class="book-description" th:text="${libro.descripcion}">
+                                        Descripción detallada del libro...
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Virtual Book Alert -->
+                            <div th:if="${libro.tipo == 'virtual'}" class="virtual-book-alert d-flex align-items-start mt-4">
+                                <div class="alert-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-2">Contenido digital disponible</h5>
+                                    <p class="mb-0">Para acceder al PDF de este libro virtual, <a href="/login" class="fw-bold text-decoration-none">inicie sesión</a> en su cuenta.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Back Button -->
+                            <div class="text-end mt-4">
+                                <a href="/invitado/catalogo" class="btn btn-back">
+                                    <i class="fas fa-arrow-left me-2"></i>Volver al Catálogo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="container">
+            <p class="footer-text">© 2025 Biblioteca Virtual. Jose Villarreal y Fabian Parada.</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
