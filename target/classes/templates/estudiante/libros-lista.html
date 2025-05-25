@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo ?: 'Biblioteca Virtual'}">Biblioteca Virtual</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a2c2a;
+            --secondary-color: #7d4f50;
+            --accent-color: #d4a373;
+            --light-color: #fefae0;
+            --dark-color: #283618;
+            --text-color: #333333;
+            --white-color: #ffffff;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --favorite-color: #e76f51;
+            --pending-color: #f4a261;
+            --read-color: #2a9d8f;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1rem 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover,
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: var(--white-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .dropdown-menu {
+            background-color: var(--white-color);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            padding: 0.7rem 1.2rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(212, 163, 115, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline-light {
+            border-radius: 50px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 3rem 0;
+        }
+        
+        /* Header Section */
+        .header-section {
+            background: linear-gradient(135deg, var(--white-color), rgba(212, 163, 115, 0.05));
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(212, 163, 115, 0.1);
+        }
+        
+        .header-section h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header-section .lead {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-right: 1.5rem;
+        }
+        
+        .header-icon-favoritos {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .header-icon-pendientes {
+            background-color: rgba(13, 202, 240, 0.1);
+            color: var(--info-color);
+        }
+        
+        .header-icon-leidos {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: var(--success-color);
+        }
+        
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .book-card {
+            height: 100%;
+            background-color: var(--white-color);
+        }
+        
+        .libro-imagen {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover .libro-imagen {
+            transform: scale(1.05);
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+        
+        .card-text {
+            color: #666;
+        }
+        
+        /* Button Styles */
+        .btn {
+            border-radius: 50px;
+            padding: 0.6rem 1.4rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-outline-danger {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        /* Badge Styles */
+        .badge {
+            padding: 0.5rem 0.8rem;
+            font-weight: 500;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .badge-virtual {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: var(--success-color);
+        }
+        
+        .badge-fisico {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+        }
+        
+        .badge-categoria {
+            background-color: rgba(212, 163, 115, 0.1);
+            color: var(--primary-color);
+        }
+        
+        /* Alert Styles */
+        .alert {
+            border: none;
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert i {
+            font-size: 1.2rem;
+            margin-right: 0.8rem;
+        }
+        
+        .alert-success {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .alert-info {
+            background-color: rgba(13, 202, 240, 0.1);
+            color: var(--info-color);
+            border-left: 4px solid var(--info-color);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            background-color: var(--white-color);
+            padding: 4rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .empty-state h3 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark-color);
+            color: var(--white-color);
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-text {
+            opacity: 0.8;
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Animation for page load */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header-section {
+                padding: 2rem;
+            }
+            
+            .header-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin-right: 1rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .main-content {
+                padding: 2rem 0;
+            }
+        }
+        
+        /* Hover effects for interactivity */
+        .interactive:hover {
+            cursor: pointer;
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/estudiante/inicio">
+                <i class="fas fa-book-open"></i>
+                Biblioteca Virtual
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/estudiante/inicio">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/estudiante/catalogo">
+                            <i class="fas fa-book me-1"></i>Catálogo
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-heart me-1"></i>Mis Listas
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/estudiante/libros/favoritos">
+                                <i class="fas fa-star text-warning me-2"></i>Favoritos
+                            </a></li>
+                            <li><a class="dropdown-item" href="/estudiante/libros/pendientes">
+                                <i class="fas fa-clock text-info me-2"></i>Pendientes
+                            </a></li>
+                            <li><a class="dropdown-item" href="/estudiante/libros/leidos">
+                                <i class="fas fa-check-circle text-success me-2"></i>Leídos
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/estudiante/prestamos">
+                            <i class="fas fa-bookmark me-1"></i>Mis Préstamos
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="text-white me-3" th:text="${'Bienvenido: ' + session.usuarioNombre}">Bienvenido: Estudiante</span>
+                    <a href="/logout" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="container fade-in">
+            <!-- Alertas -->
+            <div th:if="${mensaje}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${mensaje}">Mensaje de éxito</span>
+            </div>
+            
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span th:text="${error}">Mensaje de error</span>
+            </div>
+            
+            <div th:if="${info}" class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <span th:text="${info}">Mensaje informativo</span>
+            </div>
+            
+            <!-- Header Section -->
+            <div class="header-section">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="header-icon" 
+                         th:classappend="${tipoLista == 'favoritos' ? 'header-icon-favoritos' : 
+                                        (tipoLista == 'pendientes' ? 'header-icon-pendientes' : 
+                                        (tipoLista == 'leidos' ? 'header-icon-leidos' : ''))}">
+                        <i th:if="${tipoLista == 'favoritos'}" class="fas fa-star"></i>
+                        <i th:if="${tipoLista == 'pendientes'}" class="fas fa-clock"></i>
+                        <i th:if="${tipoLista == 'leidos'}" class="fas fa-check-circle"></i>
+                        <i th:unless="${tipoLista}" class="fas fa-book"></i>
+                    </div>
+                    <div>
+                        <h1 th:text="${titulo ?: 'Mi Biblioteca'}">Mi Biblioteca</h1>
+                        <p class="lead mb-0" th:text="${descripcion ?: 'Gestiona tu colección personal de libros'}">
+                            Gestiona tu colección personal de libros
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <a href="/estudiante/inicio" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i>Volver al inicio
+                    </a>
+                    
+                    <a href="/estudiante/catalogo" class="btn btn-primary">
+                        <i class="fas fa-search"></i>Explorar catálogo
+                    </a>
+                </div>
+            </div>
+
+            <!-- Contenido dinámico - Aquí va el contenido específico de cada página -->
+            <div id="dynamic-content">
+                <!-- Estado vacío por defecto -->
+                <div class="empty-state" th:if="${libros != null and libros.empty}">
+                    <div class="empty-icon">
+                        <i th:if="${tipoLista == 'favoritos'}" class="fas fa-star"></i>
+                        <i th:if="${tipoLista == 'pendientes'}" class="fas fa-clock"></i>
+                        <i th:if="${tipoLista == 'leidos'}" class="fas fa-check-circle"></i>
+                        <i th:unless="${tipoLista}" class="fas fa-book"></i>
+                    </div>
+                    <h3>No hay libros disponibles</h3>
+                    <p th:text="${mensajeVacio ?: 'Aún no tienes libros en esta sección.'}">
+                        Aún no tienes libros en esta sección.
+                    </p>
+                    <a href="/estudiante/catalogo" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Explorar el catálogo
+                    </a>
+                </div>
+
+                <!-- Grid de libros -->
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" th:if="${libros != null and !libros.empty}">
+                    <div class="col" th:each="libro : ${libros}">
+                        <div class="card book-card h-100">
+                            <img th:if="${libro.imagen != null && libro.imagen.length > 0}" 
+                                 th:src="@{'/estudiante/imagen-libro/' + ${libro.id}}" 
+                                 alt="Portada del libro" class="libro-imagen">
+                            <img th:unless="${libro.imagen != null && libro.imagen.length > 0}" 
+                                 src="/api/placeholder/300/220" class="libro-imagen" alt="Portada por defecto">
+                            
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title" th:text="${libro.titulo}">Título del libro</h5>
+                                <p class="card-text text-muted mb-2" th:text="${libro.autor}">Autor</p>
+                                
+                                <div class="mb-3">
+                                    <span class="badge badge-categoria" th:text="${libro.categoria}">Categoría</span>
+                                    <span th:if="${libro.tipo == 'virtual'}" class="badge badge-virtual">Virtual</span>
+                                    <span th:if="${libro.tipo == 'fisico'}" class="badge badge-fisico">Físico</span>
+                                </div>
+                                
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <a th:href="@{'/estudiante/libro/' + ${libro.id}}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i>Ver detalles
+                                    </a>
+                                    <form th:if="${tipoLista != null}" 
+                                          th:action="@{'/estudiante/libros/' + ${tipoLista} + '/' + ${libro.id} + '/quitar'}" 
+                                          method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                                title="Quitar de la lista">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="footer-text">© 2025 Biblioteca Virtual. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
