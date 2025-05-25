@@ -289,9 +289,19 @@
             color: white;
         }
         
+        .btn-warning:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+        }
+        
         .btn-danger {
             background-color: #e74c3c;
             color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
         }
         
         .btn i {
@@ -457,8 +467,8 @@
                         </div>
                         
                         <!-- Enlace al PDF (solo para libros virtuales) -->
-                        <div th:if="${libro.tipo == 'virtual' && libro.archivoPdf != null}" class="mt-4">
-                            <a th:href="@{'/uploads/' + ${libro.archivoPdf}}" target="_blank" class="btn btn-primary">
+                        <div th:if="${libro.tipo == 'virtual' && libro.archivoPdf != null && libro.archivoPdf.length > 0}" class="mt-4">
+                            <a th:href="@{'/bibliotecario/libros/pdf/' + ${libro.id}}" target="_blank" class="btn btn-primary">
                                 <i class="fas fa-file-pdf"></i>Ver PDF
                             </a>
                         </div>

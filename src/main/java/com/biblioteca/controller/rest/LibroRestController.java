@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/libros")
@@ -75,8 +76,10 @@ public class LibroRestController {
                 libro.setImagen(imagen.getBytes());
             }
             
-            // El PDF se maneja como antes (almacenando la ruta)
-            // Esta parte depende de cómo quieras manejar los PDFs
+            // Procesar PDF si se proporciona
+            if (pdf != null && !pdf.isEmpty()) {
+                libro.setArchivoPdf(pdf.getBytes());
+            }
             
             Libro nuevoLibro = libroService.guardar(libro);
             return new ResponseEntity<>(nuevoLibro, HttpStatus.CREATED);
@@ -104,7 +107,12 @@ public class LibroRestController {
                             libro.setImagen(libroExistente.getImagen());
                         }
                         
-                        // El PDF se maneja como antes
+                        // Actualizar PDF solo si se proporciona uno nuevo
+                        if (pdf != null && !pdf.isEmpty()) {
+                            libro.setArchivoPdf(pdf.getBytes());
+                        } else {
+                            libro.setArchivoPdf(libroExistente.getArchivoPdf());
+                        }
                         
                         Libro libroActualizado = libroService.guardar(libro);
                         return new ResponseEntity<>(libroActualizado, HttpStatus.OK);
@@ -156,6 +164,17 @@ public class LibroRestController {
                 .map(libro -> ResponseEntity.ok()
                         .contentType(MediaType.IMAGE_JPEG)
                         .body(libro.getImagen()))
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    // Endpoint para obtener el PDF de un libro
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> obtenerPdfLibro(@PathVariable String id) {
+        return libroService.obtenerPorId(id)
+                .filter(libro -> libro.getArchivoPdf() != null && libro.getArchivoPdf().length > 0)
+                .map(libro -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(libro.getArchivoPdf()))
                 .orElse(ResponseEntity.notFound().build());
     }
 }

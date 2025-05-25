@@ -612,7 +612,7 @@
             
             <!-- Listado de libros -->
             <div class="row" th:unless="${#lists.isEmpty(libros)}">
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4" th:each="libro : ${libros}">
+                <div class="col-md-3 mb-4" th:each="libro : ${libros}">
                     <div class="book-card">
                         <div class="book-img-container">
                             <!-- Usar el nuevo endpoint para mostrar imágenes -->
@@ -645,11 +645,6 @@
                             <div class="d-grid gap-2">
                                 <a th:href="@{'/profesor/detalle-libro/' + ${libro.id}}" class="btn btn-details">
                                     <i class="fas fa-info-circle me-1"></i>Ver Detalles
-                                </a>
-                                <a th:if="${libro.tipo == 'virtual' && libro.archivoPdf != null}" 
-                                   th:href="@{'/uploads/' + ${libro.archivoPdf}}" 
-                                   target="_blank" class="btn btn-pdf">
-                                    <i class="fas fa-file-pdf me-1"></i>Ver PDF
                                 </a>
                             </div>
                         </div>

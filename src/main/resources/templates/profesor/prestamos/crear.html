@@ -284,16 +284,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/profesor/historial-prestamos">Mis Préstamos</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Mis Listas
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/profesor/libros-favoritos">Favoritos</a></li>
-                            <li><a class="dropdown-item" href="/profesor/libros-pendientes">Pendientes</a></li>
-                            <li><a class="dropdown-item" href="/profesor/libros-leidos">Leídos</a></li>
-                        </ul>
-                    </li>
+					<li class="nav-item dropdown">
+					                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					                            Mis Listas
+					                        </a>
+					                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					                            <li><a class="dropdown-item" href="/profesor/libros-favoritos">Favoritos</a></li>
+					                            <li><a class="dropdown-item" href="/profesor/libros-pendientes">Pendientes</a></li>
+					                            <li><a class="dropdown-item" href="/profesor/libros-leidos">Leídos</a></li>
+					                        </ul>
+					                    </li>
                 </ul>
                 <div class="d-flex align-items-center">
                     <span class="text-white me-3" th:text="${'Bienvenido: ' + session.usuarioNombre}">Bienvenido: Profesor</span>
@@ -352,7 +352,7 @@
                                     <label for="comentarios" class="form-label">
                                         <i class="fas fa-comment me-2"></i>Comentarios (opcional)
                                     </label>
-                                    <textarea class="form-control" id="comentarios" name="comentarios" rows="4" th:field="*{comentarios}" placeholder="Añada cualquier comentario o nota relevante para su solicitud..."></textarea>
+                                    <textarea class="form-control" id="comentarios" name="comentarios" rows="3" th:field="*{comentarios}" placeholder="Añada cualquier comentario o nota relevante para su solicitud..."></textarea>
                                     <small class="form-text">Puede añadir comentarios adicionales sobre su solicitud de préstamo.</small>
                                 </div>
                                 

@@ -471,13 +471,13 @@
                 <h3 class="mb-3" th:text="${'No tienes libros en tu lista de ' + tipoLista}">No tienes libros en esta lista</h3>
                 <p class="text-muted mb-4">Explora el catálogo y añade libros a esta lista.</p>
                 <a href="/profesor/catalogo" class="btn btn-primary">
-                    <i class="fas fa-book"></i>Explorar Catálogo
+                    <i class="fas fa-book me-2"></i>Explorar Catálogo
                 </a>
             </div>
             
             <!-- Listado de libros -->
             <div class="row" th:unless="${#lists.isEmpty(libros)}">
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4" th:each="libro : ${libros}">
+                <div class="col-md-3 mb-4" th:each="libro : ${libros}">
                     <div class="book-card">
                         <div class="book-img-container">
                             <!-- Usar el endpoint para mostrar imágenes -->
@@ -510,25 +510,25 @@
                             
                             <div class="book-actions">
                                 <a th:href="@{'/profesor/detalle-libro/' + ${libro.id}}" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-info-circle"></i>Detalles
+                                    <i class="fas fa-info-circle me-1"></i>Detalles
                                 </a>
                                 
                                 <!-- Botón para quitar de la lista -->
                                 <form th:if="${tipoLista == 'favoritos'}" method="post" th:action="@{'/profesor/libros-favoritos/' + ${libro.id} + '/quitar'}">
                                     <button type="submit" class="btn btn-outline-danger btn-sm">
-                                        <i class="fas fa-times"></i>Quitar
+                                        <i class="fas fa-times me-1"></i>Quitar
                                     </button>
                                 </form>
                                 
                                 <form th:if="${tipoLista == 'pendientes'}" method="post" th:action="@{'/profesor/libros-pendientes/' + ${libro.id} + '/quitar'}">
                                     <button type="submit" class="btn btn-outline-warning btn-sm">
-                                        <i class="fas fa-times"></i>Quitar
+                                        <i class="fas fa-times me-1"></i>Quitar
                                     </button>
                                 </form>
                                 
                                 <form th:if="${tipoLista == 'leidos'}" method="post" th:action="@{'/profesor/libros-leidos/' + ${libro.id} + '/quitar'}">
                                     <button type="submit" class="btn btn-outline-success btn-sm">
-                                        <i class="fas fa-times"></i>Quitar
+                                        <i class="fas fa-times me-1"></i>Quitar
                                     </button>
                                 </form>
                             </div>
@@ -542,7 +542,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
-            <p class="footer-text">© 2025 Biblioteca Virtual. Jose Villarreal y Fabian Parada</p>
+            <p class="footer-text">© 2025 Biblioteca Virtual. Todos los derechos reservados.</p>
         </div>
     </footer>
 

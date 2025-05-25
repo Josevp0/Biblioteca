@@ -59,9 +59,21 @@ public class AdminLibroController {
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
             response.getOutputStream().write(libro.getImagen());
             response.getOutputStream().flush();
-        } else {
-            // Si no hay imagen, podríamos redirigir a una imagen por defecto
-            // o simplemente no hacer nada y dejar que el cliente maneje el error
+        }
+    }
+    
+    /**
+     * Endpoint para servir PDFs de libros directamente desde la base de datos
+     */
+    @GetMapping("/pdf/{id}")
+    public void mostrarPdfLibro(@PathVariable String id, HttpServletResponse response) throws IOException {
+        Optional<Libro> libroOpt = libroService.obtenerPorId(id);
+        
+        if (libroOpt.isPresent() && libroOpt.get().getArchivoPdf() != null && libroOpt.get().getArchivoPdf().length > 0) {
+            Libro libro = libroOpt.get();
+            response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+            response.getOutputStream().write(libro.getArchivoPdf());
+            response.getOutputStream().flush();
         }
     }
 }

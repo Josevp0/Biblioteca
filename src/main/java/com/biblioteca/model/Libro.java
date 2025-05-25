@@ -12,8 +12,8 @@ public class Libro {
     private String autor;
     private String descripcion;
     private String tipo; // "fisico" o "virtual"
-    private byte[] imagen; // Cambiado de String a byte[]
-    private String archivoPdf; // Solo para libros virtuales
+    private byte[] imagen;
+    private byte[] archivoPdf; // Cambiado de String a byte[]
     private String categoria; // Ficción, No ficción, Misterio, Romántico, Fantasía
     private int stockFisico; // Número de copias para los libros físicos disponibles
     private int stockVirtual; // Número de copias para los libros virtuales disponibles
@@ -25,7 +25,7 @@ public class Libro {
     }
     
     public Libro(String id, String titulo, String autor, String descripcion, String tipo, byte[] imagen, 
-                String archivoPdf, String categoria, int stockFisico, int stockVirtual, 
+                byte[] archivoPdf, String categoria, int stockFisico, int stockVirtual, 
                 String estadoDisponibilidad) {
         this.id = id;
         this.titulo = titulo;
@@ -89,11 +89,11 @@ public class Libro {
         this.imagen = imagen;
     }
     
-    public String getArchivoPdf() {
+    public byte[] getArchivoPdf() {
         return archivoPdf;
     }
     
-    public void setArchivoPdf(String archivoPdf) {
+    public void setArchivoPdf(byte[] archivoPdf) {
         this.archivoPdf = archivoPdf;
     }
     

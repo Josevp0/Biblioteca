@@ -275,6 +275,11 @@
             color: white;
         }
         
+        .btn-secondary:hover {
+            background-color: #95a5a6;
+            transform: translateY(-2px);
+        }
+        
         .btn-success {
             background-color: #27ae60;
             color: white;
@@ -288,6 +293,11 @@
         .btn-info {
             background-color: #3498db;
             color: white;
+        }
+        
+        .btn-info:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
         }
         
         .btn i {
@@ -485,13 +495,13 @@
                     </div>
                     
                     <!-- PDF actual (solo para libros virtuales) -->
-                    <div class="mb-4" th:if="${libro.tipo == 'virtual' && libro.archivoPdf != null}">
+                    <div class="mb-4" th:if="${libro.tipo == 'virtual' && libro.archivoPdf != null && libro.archivoPdf.length > 0}">
                         <label class="form-label">
                             <i class="fas fa-file-pdf me-2"></i>Archivo PDF Actual
                         </label>
                         <div class="current-file">
                             <i class="fas fa-file-pdf text-danger me-2" style="font-size: 2rem;"></i>
-                            <a th:href="@{'/uploads/' + ${libro.archivoPdf}}" target="_blank" class="btn btn-sm btn-info">Ver PDF</a>
+                            <a th:href="@{'/bibliotecario/libros/pdf/' + ${libro.id}}" target="_blank" class="btn btn-sm btn-info">Ver PDF</a>
                         </div>
                         <div class="form-text">Deja vacío para mantener el PDF actual</div>
                     </div>

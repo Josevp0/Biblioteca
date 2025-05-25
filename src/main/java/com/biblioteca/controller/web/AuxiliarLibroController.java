@@ -59,4 +59,17 @@ public class AuxiliarLibroController {
             response.getOutputStream().flush();
         }
     }
+    
+    // Endpoint para servir PDFs directamente desde la base de datos
+    @GetMapping("/pdf/{id}")
+    public void mostrarPdfLibro(@PathVariable String id, HttpServletResponse response) throws IOException {
+        Optional<Libro> libroOpt = libroService.obtenerPorId(id);
+        
+        if (libroOpt.isPresent() && libroOpt.get().getArchivoPdf() != null && libroOpt.get().getArchivoPdf().length > 0) {
+            Libro libro = libroOpt.get();
+            response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+            response.getOutputStream().write(libro.getArchivoPdf());
+            response.getOutputStream().flush();
+        }
+    }
 }

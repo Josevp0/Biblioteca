@@ -322,6 +322,22 @@
                 display: none;
             }
         }
+        
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -350,6 +366,9 @@
         </div>
     </div>
     
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay"></div>
+    
     <!-- Header -->
     <header class="main-header">
         <button class="toggle-sidebar">
@@ -358,9 +377,9 @@
         <div class="header-title">Crear Libro Virtual</div>
         <div class="user-profile">
             <div class="user-avatar" th:text="${session.usuarioNombre != null ? #strings.substring(session.usuarioNombre, 0, 1).toUpperCase() : 'B'}">B</div>
-            <button class="logout-btn" title="Cerrar sesión" onclick="window.location.href='/logout'">
+            <a href="/logout" class="logout-btn" title="Cerrar sesión">
                 <i class="fas fa-sign-out-alt"></i>
-            </button>
+            </a>
         </div>
     </header>
     
@@ -378,17 +397,23 @@
                 
                 <form th:action="@{/bibliotecario/libros/crear-virtual}" method="post" enctype="multipart/form-data">
                     <div class="mb-4">
-                        <label for="titulo" class="form-label">Título</label>
+                        <label for="titulo" class="form-label">
+                            <i class="fas fa-heading me-2"></i>Título
+                        </label>
                         <input type="text" class="form-control" id="titulo" name="titulo" required>
                     </div>
                     
                     <div class="mb-4">
-                        <label for="autor" class="form-label">Autor</label>
+                        <label for="autor" class="form-label">
+                            <i class="fas fa-user me-2"></i>Autor
+                        </label>
                         <input type="text" class="form-control" id="autor" name="autor" required>
                     </div>
                     
                     <div class="mb-4">
-                        <label for="categoria" class="form-label">Categoría</label>
+                        <label for="categoria" class="form-label">
+                            <i class="fas fa-tag me-2"></i>Categoría
+                        </label>
                         <select class="form-select" id="categoria" name="categoria" required>
                             <option value="">Seleccione una categoría</option>
                             <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}">Categoría</option>
@@ -396,17 +421,23 @@
                     </div>
                     
                     <div class="mb-4">
-                        <label for="descripcion" class="form-label">Descripción</label>
+                        <label for="descripcion" class="form-label">
+                            <i class="fas fa-align-left me-2"></i>Descripción
+                        </label>
                         <textarea class="form-control" id="descripcion" name="descripcion" rows="5" required></textarea>
                     </div>
                     
                     <div class="mb-4">
-                        <label for="stockVirtual" class="form-label">Stock Virtual</label>
+                        <label for="stockVirtual" class="form-label">
+                            <i class="fas fa-key me-2"></i>Stock Virtual
+                        </label>
                         <input type="number" class="form-control" id="stockVirtual" name="stockVirtual" min="0" value="1" required>
                     </div>
                     
                     <div class="mb-4">
-                        <label for="estadoDisponibilidad" class="form-label">Estado de Disponibilidad</label>
+                        <label for="estadoDisponibilidad" class="form-label">
+                            <i class="fas fa-info-circle me-2"></i>Estado de Disponibilidad
+                        </label>
                         <select class="form-select" id="estadoDisponibilidad" name="estadoDisponibilidad">
                             <option th:each="estado : ${estados}" th:value="${estado}" th:text="${estado}">Estado</option>
                         </select>
@@ -414,23 +445,27 @@
                     </div>
                     
                     <div class="mb-4">
-                        <label for="imagenFile" class="form-label">Imagen de Portada</label>
+                        <label for="imagenFile" class="form-label">
+                            <i class="fas fa-image me-2"></i>Imagen de Portada
+                        </label>
                         <input type="file" class="form-control" id="imagenFile" name="imagenFile" accept="image/*" required>
                         <div class="form-text">Formatos aceptados: JPG, PNG, GIF. Tamaño máximo: 5MB</div>
                     </div>
                     
                     <div class="mb-4">
-                        <label for="pdfFile" class="form-label">Archivo PDF</label>
+                        <label for="pdfFile" class="form-label">
+                            <i class="fas fa-file-pdf me-2"></i>Archivo PDF
+                        </label>
                         <input type="file" class="form-control" id="pdfFile" name="pdfFile" accept="application/pdf" required>
                         <div class="form-text">Tamaño máximo: 20MB. Asegúrese de que el PDF no esté protegido.</div>
                     </div>
                     
                     <div class="d-flex justify-content-between mt-5">
                         <a href="/bibliotecario/libros/crear" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>Volver
+                            <i class="fas fa-arrow-left"></i>Volver
                         </a>
                         <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save me-2"></i>Guardar Libro
+                            <i class="fas fa-save"></i>Guardar Libro
                         </button>
                     </div>
                 </form>
@@ -443,6 +478,13 @@
         // Toggle Sidebar on Mobile
         document.querySelector('.toggle-sidebar')?.addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking overlay
+        document.querySelector('.sidebar-overlay')?.addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.remove('active');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
         });
     </script>
 </body>

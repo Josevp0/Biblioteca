@@ -70,9 +70,6 @@ public class InvitadoController {
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
             response.getOutputStream().write(libro.getImagen());
             response.getOutputStream().flush();
-        } else {
-            // Si no hay imagen, podríamos redirigir a una imagen por defecto
-            // o simplemente no hacer nada y dejar que el cliente maneje el error
         }
     }
 }

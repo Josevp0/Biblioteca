@@ -331,16 +331,16 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="/profesor/historial-prestamos">Mis Préstamos</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Mis Listas
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/profesor/libros-favoritos">Favoritos</a></li>
-                            <li><a class="dropdown-item" href="/profesor/libros-pendientes">Pendientes</a></li>
-                            <li><a class="dropdown-item" href="/profesor/libros-leidos">Leídos</a></li>
-                        </ul>
-                    </li>
+					<li class="nav-item dropdown">
+					                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					                            Mis Listas
+					                        </a>
+					                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					                            <li><a class="dropdown-item" href="/profesor/libros-favoritos">Favoritos</a></li>
+					                            <li><a class="dropdown-item" href="/profesor/libros-pendientes">Pendientes</a></li>
+					                            <li><a class="dropdown-item" href="/profesor/libros-leidos">Leídos</a></li>
+					                        </ul>
+					                    </li>
                 </ul>
                 <div class="d-flex align-items-center">
                     <span class="text-white me-3" th:text="${'Bienvenido: ' + session.usuarioNombre}">Bienvenido: Profesor</span>
@@ -426,15 +426,7 @@
                             </div>
                             
                             <!-- Comentarios del bibliotecario -->
-                            <div class="comments-section" th:if="${prestamo.comentariosBibliotecario != null && !prestamo.comentariosBibliotecario.isEmpty()}">
-                                <h5 class="comments-title">
-                                    <i class="fas fa-comment-dots"></i>
-                                    Comentarios del Bibliotecario
-                                </h5>
-                                <div class="comments-text" th:text="${prestamo.comentariosBibliotecario}">
-                                    Comentarios del bibliotecario sobre el préstamo.
-                                </div>
-                            </div>
+                            
                             
                             <!-- Botones de acción -->
                             <div class="mt-4 text-center">

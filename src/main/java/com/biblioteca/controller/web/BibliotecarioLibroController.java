@@ -4,7 +4,6 @@ import com.biblioteca.model.Libro;
 import com.biblioteca.service.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/bibliotecario/libros")
@@ -28,7 +23,6 @@ public class BibliotecarioLibroController {
     @Autowired
     private LibroService libroService;
     
-    private final String UPLOAD_DIR = "src/main/resources/static/uploads/";
     private final List<String> CATEGORIAS = Arrays.asList("Ficción", "No ficción", "Misterio", "Romántico", "Fantasía");
     
     @GetMapping("/listar")
@@ -115,13 +109,9 @@ public class BibliotecarioLibroController {
                 libro.setImagen(imagenFile.getBytes());
             }
             
-            // Guardar PDF como archivo y almacenar la ruta
+            // Guardar PDF como byte array
             if (!pdfFile.isEmpty()) {
-                String nombrePdf = UUID.randomUUID().toString() + "_" + pdfFile.getOriginalFilename();
-                Path rutaPdf = Paths.get(UPLOAD_DIR + nombrePdf);
-                Files.createDirectories(rutaPdf.getParent());
-                Files.write(rutaPdf, pdfFile.getBytes());
-                libro.setArchivoPdf(nombrePdf);
+                libro.setArchivoPdf(pdfFile.getBytes());
             }
             
             libro.setTipo("virtual");
@@ -178,11 +168,7 @@ public class BibliotecarioLibroController {
             
             // Actualizar PDF solo si se proporciona uno nuevo (solo para libros virtuales)
             if ("virtual".equals(libro.getTipo()) && pdfFile != null && !pdfFile.isEmpty()) {
-                String nombrePdf = UUID.randomUUID().toString() + "_" + pdfFile.getOriginalFilename();
-                Path rutaPdf = Paths.get(UPLOAD_DIR + nombrePdf);
-                Files.createDirectories(rutaPdf.getParent());
-                Files.write(rutaPdf, pdfFile.getBytes());
-                libro.setArchivoPdf(nombrePdf);
+                libro.setArchivoPdf(pdfFile.getBytes());
             } else {
                 libro.setArchivoPdf(libroExistente.getArchivoPdf());
             }
@@ -237,6 +223,19 @@ public class BibliotecarioLibroController {
             Libro libro = libroOpt.get();
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
             response.getOutputStream().write(libro.getImagen());
+            response.getOutputStream().flush();
+        }
+    }
+    
+    // Endpoint para servir PDFs directamente desde la base de datos
+    @GetMapping("/pdf/{id}")
+    public void mostrarPdfLibro(@PathVariable String id, HttpServletResponse response) throws IOException {
+        Optional<Libro> libroOpt = libroService.obtenerPorId(id);
+        
+        if (libroOpt.isPresent() && libroOpt.get().getArchivoPdf() != null && libroOpt.get().getArchivoPdf().length > 0) {
+            Libro libro = libroOpt.get();
+            response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+            response.getOutputStream().write(libro.getArchivoPdf());
             response.getOutputStream().flush();
         }
     }
